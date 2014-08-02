@@ -28,22 +28,24 @@ This program is so simple enough that I should skip the C++ code design issue an
 
 File: main.cpp
 
-    // File: main.cpp
-    
-    #include <iostream>
-    
-    #include "math/add.h"
-    
-    using namespace std;
-    
-    int main(){
-            cout<<"please enter two integer:"<<endl;
-    
-            int a,b;
-            cin>>a>>b;
-    
-            cout<<"add("<<a<<","<<b<<") returns "<<add(a,b)<<endl;
-    }
+``` cplusplus
+// File: main.cpp
+
+#include <iostream>
+
+#include "math/add.h"
+
+using namespace std;
+
+int main(){
+        cout<<"please enter two integer:"<<endl;
+
+        int a,b;
+        cin>>a>>b;
+
+        cout<<"add("<<a<<","<<b<<") returns "<<add(a,b)<<endl;
+}
+```
 
 File: math/add.h
 
