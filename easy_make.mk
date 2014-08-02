@@ -3,7 +3,7 @@
 # Descriptions : A generic makefiles under linux, to help you build 
 #                your c/c++ programs easily without writing a long 
 #                long tedious makefile.
-# svn          : https://svn.code.sf.net/p/easymake/code/
+# github       : https://github.com/roxma/easymake
 
 # Execute "make show" for debug information.
 
