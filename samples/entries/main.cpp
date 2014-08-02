@@ -1,8 +1,7 @@
-// File: main.cpp
-
 #include <iostream>
 
 #include "math/add.h"
+#include "math/multiply.h"
 
 using namespace std;
 
@@ -13,4 +12,6 @@ int main(){
 	cin>>a>>b;
 
 	cout<<"add("<<a<<","<<b<<") returns "<<add(a,b)<<endl;
+	cout<<"multiply("<<a<<","<<b<<") returns "<<multiply(a,b)<<endl;
+	return 0;
 }

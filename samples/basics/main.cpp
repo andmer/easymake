@@ -1,5 +1,3 @@
-// File: main.cpp
-
 #include <iostream>
 
 #include "math/add.h"

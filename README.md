@@ -4,7 +4,7 @@
   
 ## Introduction ##
 
-Easymake is a generic makefile for C/C++ on linux system. For simple C/C++ application, you don't even need to write any single line of makefile code to build it! Well, actually, you should write an include statement to include the easymake.mk rather than make a copy of it and name the file "Makefile". I hope that at least one line of makefile include statement won't bother you :-)
+Easymake is a generic makefile for C/C++ on linux system. For simple C/C++ applications, you don&rsquo;t even need to write any single line of makefile code to build it! Well, actually, you should write an include directive to include the easymake.mk rather than make a copy of it and name the file "Makefile". I hope that at least one line of makefile include directive won't bother you :-)
 
 Features are described as follows:
 
@@ -13,24 +13,22 @@ Features are described as follows:
 * Simple testing supported. (Allow multi definition of the main function).
 * VPATH perfectly supported.
 
-The following three examples will show you how to build you program with easy_make step by step.
+The following three examples will show you how to build you program with easymake step by step.
 
 
   
 ## Getting Started ##
 
-This demostration shows you how to use easy_make in a simple program. Suppose we want to write a simple program, that take to number input by user and then shows the sum. The source code of this examele in the directory `samples/basics`.
+This demostration shows you how to use easymake in a simple program. Suppose we want to write a simple program, that take to number input by user and then shows the sum. The source code of this examele in the directory `samples/basics`.
 
   
 ### Write C/C++ code ###
 
-This program is so simple enough that I should skip the C++ code design issue and show our code directly, and after that we will focuse on our topic.
+This program is simple enough that I should skip the program design and show our code directly, and after that we will focuse on our topic.
 
 File: main.cpp
 
 ``` cplusplus
-// File: main.cpp
-
 #include <iostream>
 
 #include "math/add.h"
@@ -49,24 +47,24 @@ int main(){
 
 File: math/add.h
 
-    #ifndef ADD_H
-    #define ADD_H
-    
-    // File: math/add.h
-    
-    int add(int,int);
-    
-    #endif
+``` cplusplus
+#ifndef ADD_H
+#define ADD_H
+
+int add(int,int);
+
+#endif
+```
 
 File: math/add.cpp
 
-    // File: math/add.cpp
-    
-    #include "math/add.h"
-    
-    int add(int a,int b){
-            return a+b;
-    }
+``` cplusplus
+#include "math/add.h"
+
+int add(int a,int b){
+        return a+b;
+}
+```
 
   
 ### Build Our Program with Easymake ###
@@ -75,10 +73,11 @@ I keep this example simple so that we could use command-line to build it directl
   
 #### Build with Command Line ###
 
-    g++ -c -o main.o main.cpp
-    g++ -c -o add.o math/add.cpp -I.
-    g++ -o target main.o add.o
-
+``` shell
+g++ -c -o main.o main.cpp
+g++ -c -o add.o math/add.cpp -I.
+g++ -o target main.o add.o
+```
 
 Or we could use a single command `g++ -o target main.cpp math/add.cpp -I.` to build the program.
 
@@ -96,14 +95,16 @@ Now type `ls`, and then `./target` you could see the result of our program:
 
 Create a new file name Makefile and write our code as below:
 
-    target: main.o add.o
-            g++ -o target main.o add.o
-    
-    main.o: main.cpp
-            g++ -c -o main.o main.cpp -I.
-    
-    add.o: math/add.cpp
-            g++ -c -o add.o math/add.cpp -I.
+``` makefile
+target: main.o add.o
+        g++ -o target main.o add.o
+
+main.o: main.cpp
+        g++ -c -o main.o main.cpp -I.
+
+add.o: math/add.cpp
+        g++ -c -o add.o math/add.cpp -I.
+```
 
 The result is pretty much the same:
 
@@ -123,9 +124,11 @@ The advantage of using makefile is, if you properly specify the dependencies, yo
   
 #### Build with Easymake ####
 
-In this program, simply include the `easy_make.mk` file could build our target. Now edit our Makefile as below:
+In this example, simply including the `easymake.mk` is enough. Now edit our makefile as below:
 
-    include ../../easy_make.mk
+``` makefile
+include ../../easymake.mk
+```
 
 Simply type `make` to build our program. And I&rsquo;m gonna show you more details so you could understand how our program is built.
 
@@ -151,9 +154,9 @@ Take the look at our directory structure:
     [root@VM_6_207_centos basics]# tree .
     .
     ├── bin
-    │   ├── easy_make_current_entry_file
-    │   ├── easy_make_detected_entries
-    │   ├── easy_make_entries_tmp.d
+    │   ├── easymake_current_entry_file
+    │   ├── easymake_detected_entries
+    │   ├── easymake_entries_tmp.d
     │   ├── main.d
     │   ├── main.o
     │   ├── math
@@ -168,14 +171,14 @@ Take the look at our directory structure:
     
     3 directories, 12 files
 
-Easymake use a folder `bin` as the `BUILD_ROOT` for generating code so that our source folder won&rsquo;t be polluted. Those `*.d` and `easy_make_*` files are generated by easymake to maintain the dependencies. The `*.d` file is makefile syntax, take a look at `main.d` for example:
+Easymake use a folder `bin` as the `BUILD_ROOT` for generating code so that our source folder won&rsquo;t be polluted. Those `*.d` and `easymake_*` files are generated by easymake to maintain the dependencies. The `*.d` file is makefile syntax, take a look at `main.d` for example:
 
     [root@VM_6_207_centos basics]# cat bin/main.d
     bin/main.o: main.cpp math/add.h
     
     math/add.h:
 
-These dependencies are auto generated by easy make, so every time the math/add.h is modified, It will caused the main.o to be re-generated. Actually you don&rsquo;t need to understand all these issues in order to use easy make, so we should just omit these extra-generated files and build our program with simply a `make` command. If you&rsquo;re intrested, take a look at the source code in `easy_make.mk`. I believe it&rsquo;s properly commented and easy enough for understanding.
+These dependencies are auto generated by easy make, so every time the math/add.h is modified, It will caused the main.o to be re-generated. Actually you don&rsquo;t need to understand all these issues in order to use easy make, so we should just omit these extra-generated files and build our program with simply a `make` command. If you&rsquo;re intrested, take a look at the source code in `easymake.mk`. I believe it&rsquo;s properly commented and easy enough for understanding.
 
   
 ### User Options ###
@@ -186,7 +189,7 @@ Suppose you want to compile the program with gcc compiler&rsquo;s `-O2` optimiza
     COMPILE_FLAGS   += -O2
     LINK_FLAGS      += -static
     
-    include ../../easy_make.mk
+    include ../../easymake.mk
 
 Now rebuild the program:
 
@@ -253,37 +256,43 @@ Now suppose we need to add a multiply function to the previous program. First we
 
 File `math/multiply.h`:
 
-    #ifndef MULTIPLY_H
-    #define MULTIPLY_H
-    
-    #include "stdint.h"
-    
-    int64_t multiply(int32_t,int32_t);
-    
-    #endif
+``` cplusplus
+#ifndef MULTIPLY_H
+#define MULTIPLY_H
+
+#include "stdint.h"
+
+int64_t multiply(int32_t,int32_t);
+
+#endif
+```
 
 File `math/multiply.cpp`:
 
-    #include "math/multiply.h"
-    
-    int64_t multiply(int32_t a,int32_t b){
-            return (int64_t)a*(int64_t)b;
-    }
+``` cplusplus
+#include "math/multiply.h"
+
+int64_t multiply(int32_t a,int32_t b){
+        return (int64_t)a*(int64_t)b;
+}
+```
 
   
 ### Write Test Code ###
 
 Type `mkdir test` and then `vim test/multiply.cpp` to write our test code. For simplicity, just print the result of 8 multiplied by 8 int the main function.
 
-    #include "math/multiply.h"
-    
-    #include <iostream>
-    
-    using namespace std;
-    
-    int main(){
-            cout<<"multiply(8,8)="<<multiply(8,8)<<endl;
-    }
+``` cplusplus
+#include "math/multiply.h"
+
+#include <iostream>
+
+using namespace std;
+
+int main(){
+        cout<<"multiply(8,8)="<<multiply(8,8)<<endl;
+}
+```
 
   
 ### Build Our Test ###
@@ -316,3 +325,4 @@ If you need to specify the `ENTRY` explicitly, pick main.cpp for example, use th
     ENTRY: main.cpp
 
 Now we&rsquo;ve test our multiply module, We can Modify the main.cpp and glue the module into our program. The following step is omit here for abbreviation. You could look into the `samples/entries` folder if need to.
+
