@@ -4,16 +4,16 @@
   
 ## Introduction ##
 
-Easymake is a generic makefile for C/C++ on linux system. For simple C/C++ applications, you don&rsquo;t even need to write a single line of makefile code to build your target with easymake. Well, actually, you should write an `include` directive to include the `easymake.mk` rather than paste a copy of it and name the file "Makefile" :-)
+Easymake is a generic makefile for C/C++ on linux system. For simple C/C++ applications, you don&rsquo;t even need to write a single line of makefile code to build your target with easymake.
 
-Features are described as follows:
+Features description:
 
 * Automatic C/C++ sources (\*.c and \*.cpp) file detection.
-* Auto dependency generation.
-* Simple testing supported. Easy management of more tha one entry point (the main function).
-* VPATH fully supported.
+* Auto dependency generation and meɪntənəns, to accelerate the build time.
+* Simple unit testing supported. Easy management of more tha one entry point (the main function) in the project.
+* `VPATH` fully supported.
 
-The following examples will show you how to build you program with easymake step by step.
+The following examples will show you how to build you program with easymake step by step. Don't be frightened by such a long article, most of the part in the following section is about writing a simple C/C++ program. easymake is very easy to learn, just as the 'easy' in the name.
 
 
   
@@ -69,7 +69,7 @@ int add(int a,int b){
   
 ### Build Our Program with Easymake ###
 
-I keep this program simple so that we could use command-line to build it directly. If you are familliar with makefile syntax, you can also write a makefile to build it from scratch in seconds. Now you may wonder how we build the program with easymake? I will show all the three methods for you to make it clear and you could compare these methods directly.
+I keep this program simple so that we could use command-line to build it directly. If you are familliar with makefile syntax, you may also write a makefile from scratch to build it in seconds. Now you may wonder how we build the program with easymake? Don't worry, I will show all the three methods for you to make it clear and you could compare these methods directly.
   
 #### Build with Command Line ###
 
@@ -79,9 +79,9 @@ g++ -c -o add.o math/add.cpp -I.
 g++ -o target main.o add.o
 ```
 
-Or we could use a single command `g++ -o target main.cpp math/add.cpp -I.` to build the program.
+Or just use a single command `g++ -o target main.cpp math/add.cpp -I.` to build the program.
 
-Now type `ls`, and then `./target` you could see the result of our program:
+Type `ls`, and then `./target` you should see the result of our program:
 
     [root@VM_6_207_centos basics]# ls
     add.o  bin  main.cpp  main.o  makefile  math  target
