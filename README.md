@@ -318,7 +318,7 @@ Notice that `main.cpp` and `test/multiply.cpp` are both properly compiled, but o
 
 Now you must be wondering why? How did easymake decide to pick `test/multiply.cpp` rather than `main.cpp`? Behind the magic is the timestamps of the entry files. If there&rsquo;s more than one entry and the user did&rsquo;t specify which one to pick, The entry file with the newest timestamp will be picked by easymake automatically. 
 
-If you need to specify the `ENTRY` explicitly, pick main.cpp for example, use the command `make ENTRY=main.cpp`:
+If you need to specify the `ENTRY` explicitly, pick main.cpp for example, use the command `make ENTRY=main.cpp` simply `make ENTRY=m` :
 
     [root@VM_6_207_centos entries]# make ENTRY=main.cpp
     g++ -o bin/target bin/main.o bin/math/add.o bin/math/multiply.o  -static

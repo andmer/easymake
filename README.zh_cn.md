@@ -316,7 +316,7 @@ int main(){
 
 现在你肯定是在纳闷，easymake 是如何知道要选择 `test/multiply.cpp` 而不是 `main.cpp` 的？是不是很神奇？其实这里使用的是入口文件的最后修改时间。如果有多个入口文件，而且用户没有显式地声明使用哪个入口，那么 easymake 就会自动选择最新的那个计算器文件。
 
-如果你需要显式地声明 `ENTRY`，以选择 `main.cpp` 为例，可以输入命令 `make ENTRY=main.cpp`：
+如果你需要显式地声明 `ENTRY`，以选择 `main.cpp` 为例，可以输入命令 `make ENTRY=main.cpp` 或者 `make ENTRY=m` ：
 
     [root@VM_6_207_centos entries]# make ENTRY=main.cpp
     g++ -o bin/target bin/main.o bin/math/add.o bin/math/multiply.o  -static
