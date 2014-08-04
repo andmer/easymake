@@ -61,17 +61,30 @@ SelectFirstMatch=$(if $(word 1,$(foreach word,$(2),$(if $(findstring $(1),$(word
 # # @note A name with $(VPATH) as base will fail here
 FileExist=$(if $(wildcard $(1)),yes,)
 
-# ##
-# # Search the path of the files, if a file name is based on $(VPATH), Then the
-# # corresopnding result of that element will be $(VPATH)/$(1)
-# # @param 1 A list of file name
+##
+# Search the path of the files, if a file name is based on $(VPATH), Then the
+# corresopnding result of that element will be $(VPATH)/$(1)
+# @param 1 A list of file name
 SearchFilePath=$(foreach file,$(1),$(if $(call FileExist,$(file)),$(file),$(foreach vpathDir,$(VPATH),$(if $(call FileExist,$(vpathDir)/$(file)),$(vpathDir)/$(file)))))
 
 ##
+# @param 1 Entry name
+GetEntryPath4Timestamp=$(if $(call SearchFilePath,$(1)),$(call SearchFilePath,$(1)),$(shell if [ ! -f $(BUILD_ROOT)/easy_make_entry_timestamp_$(1) ]; then  touch $(BUILD_ROOT)/easy_make_entry_timestamp_$(1); fi)$(BUILD_ROOT)/easy_make_entry_timestamp_$(1))
+
+##
+# If the user specifies $(ENTRY), and the $(ENTRY) is not a file, update its 
+# timestamp
+ifneq ($(ENTRY),)
+ifeq ($(strip $(call SearchFilePath,$(ENTRY))),)
+    $(shell  touch $(BUILD_ROOT)/easy_make_entry_timestamp_$(ENTRY))
+endif
+endif
+
+##
 # Get the file with the newest timestamp
-# # @param 1 A list of files
-# # @return The index of files in the list
-GetNewestFileIndex=$(shell newestIndex=1 && index=1 && newest=$(call SearchFilePath,$(word 1,$(1))) && for file in $(call SearchFilePath,$(1)) ; do if [ $$file -nt $$newest ] ; then newest=$$file; newestIndex=$$index; fi; let index+=1; done && echo $$newestIndex)
+# @param 1 A list of files
+# @return The index of files in the list
+GetNewestFileIndex=$(shell newestIndex=1 && index=1 && newest=$(call GetEntryPath4Timestamp,$(word 1,$(1))) && for file in $(foreach file,$(1),$(call GetEntryPath4Timestamp,$(file)) ) ; do if [ $$file -nt $$newest ] ; then newest=$$file; newestIndex=$$index; fi; let index+=1; done && echo $$newestIndex)
 
 ##
 # A function to decide the actual entry file.
@@ -227,9 +240,11 @@ show:
 	@echo "easy_make_target           : $(easy_make_target)"
 	@echo "easy_make_all_cppobjects   : $(easy_make_all_cppobjects)"
 	@echo "easy_make_all_cobjects     : $(easy_make_all_cobjects)"
-	@echo "newest entry               : $(word $(call GetNewestFileIndex,$(easy_make_entry_list)),$(easy_make_entry_list))"
 	@echo "----------"
 	@echo "The following variable is valid after make"
+	@echo "newest entry index           : $(call GetNewestFileIndex,$(easy_make_entry_list))"
+	@echo "newest entry                 : $(word $(call GetNewestFileIndex,$(easy_make_entry_list)),$(easy_make_entry_list))"
+	@echo "files for entry timestamp    : $(foreach file,$(easy_make_entry_list),$(call GetEntryPath4Timestamp,$(file)) )"
 	@echo "  easy_make_entry_list       : $(easy_make_entry_list)"
 	@echo "  easy_make_entry            : $(easy_make_entry)"
 	@echo "  easy_make_entry_link_flags : $(easy_make_entry_link_flags)"
@@ -291,7 +306,7 @@ easy_make_entry=$(call GetEntry,$(ENTRY),$(easy_make_entry_list),"ENTRY=$(ENTRY)
 easy_make_cppsources=$(call SourcesToLink,$(CPPSOURCES),$(easy_make_entry),$(easy_make_entry_list))
 easy_make_csources=$(call SourcesToLink,$(CSOURCES),$(easy_make_entry),$(easy_make_entry_list))
 easy_make_objects=$(call CorrendingObjects,$(easy_make_cppsources),$(BUILD_ROOT),$(CPPEXT)) $(call CorrendingObjects,$(easy_make_csources),$(BUILD_ROOT),$(CEXT))
-easy_make_entry_link_flags=$(call ReadSettings,$(SETTINGS_ROOT)/$(easy_make_entry).link_flags)
+easy_make_entry_link_flags=$(call ReadSettings,$(SETTINGS_ROOT)/$(easy_make_entry).link_flags) $(ENTRY_$(strip $(easy_make_entry))_LINK_FLAGS)
 # The $(if ...) block makes sure that the $(easy_make_target) is re-created
 # when different $(TARGET) or different $(ENTRY) is set by user at command line
 $(easy_make_target): $(easy_make_all_cppobjects) $(easy_make_all_cobjects) $(if $(filter-out $(prev_entry) $(prev_target),$(if $(ENTRY),$(ENTRY),$(prev_entry)) $(TARGET)),easy_make_phony,)
