@@ -288,7 +288,7 @@ $(BUILD_ROOT)/%.o: %.$(CEXT)
 
 # include all generated dependency files
 ifneq ($(strip $(easy_make_all_cppobjects)),)
-sinclude $(easy_make_all_cppobjects:.o=.d)
+    sinclude $(easy_make_all_cppobjects:.o=.d)
 endif
 ifneq ($(strip $(easy_make_all_cobjects)),)
     sinclude $(easy_make_all_cobjects:.o=.d)
@@ -310,6 +310,7 @@ easy_make_entry_link_flags=$(call ReadSettings,$(SETTINGS_ROOT)/$(easy_make_entr
 # The $(if ...) block makes sure that the $(easy_make_target) is re-created
 # when different $(TARGET) or different $(ENTRY) is set by user at command line
 $(easy_make_target): $(easy_make_all_cppobjects) $(easy_make_all_cobjects) $(if $(filter-out $(prev_entry) $(prev_target),$(if $(ENTRY),$(ENTRY),$(prev_entry)) $(TARGET)),easy_make_phony,)
-	$(LINKER) -o $@ $(easy_make_objects) $(LINK_FLAGS) $(easy_make_entry_link_flags) $(addprefix -L,$(LINK_SEARCH_PATH))
+	$(if $(call ENTRY_$(strip $(easy_make_entry))_LinkCmd,$@,$(easy_make_objects)),@ true || ,)$(LINKER) -o $@ $(easy_make_objects) $(LINK_FLAGS) $(easy_make_entry_link_flags) $(addprefix -L,$(LINK_SEARCH_PATH))
+	$(call ENTRY_$(strip $(easy_make_entry))_LinkCmd,$@,$(easy_make_objects))
 	@echo "$(easy_make_entry)" > $(easy_make_f_info)
 	@echo "$(TARGET)" >> $(easy_make_f_info)
