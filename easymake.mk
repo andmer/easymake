@@ -76,6 +76,7 @@ GetEntryPath4Timestamp=$(if $(call SearchFilePath,$(1)),$(call SearchFilePath,$(
 # timestamp
 ifneq ($(ENTRY),)
 ifeq ($(strip $(call SearchFilePath,$(ENTRY))),)
+    $(shell mkdir -p $(dir $(BUILD_ROOT)/easy_make_entry_timestamp_$(ENTRY)))
     $(shell  touch $(BUILD_ROOT)/easy_make_entry_timestamp_$(ENTRY))
 endif
 endif
