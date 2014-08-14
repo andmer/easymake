@@ -311,6 +311,8 @@ easy_make_entry_link_flags=$(call ReadSettings,$(SETTINGS_ROOT)/$(easy_make_entr
 # The $(if ...) block makes sure that the $(easy_make_target) is re-created
 # when different $(TARGET) or different $(ENTRY) is set by user at command line
 $(easy_make_target): $(easy_make_all_cppobjects) $(easy_make_all_cobjects) $(if $(filter-out $(prev_entry) $(prev_target),$(if $(ENTRY),$(ENTRY),$(prev_entry)) $(TARGET)),easy_make_phony,)
+	@echo ""
+	@echo "[NOTICE]: LINKING USING **$(easy_make_entry)** AS ENTRY"
 	$(if $(call ENTRY_$(strip $(easy_make_entry))_LinkCmd,$@,$(easy_make_objects)),@ true || ,)$(LINKER) -o $@ $(easy_make_objects) $(LINK_FLAGS) $(easy_make_entry_link_flags) $(addprefix -L,$(LINK_SEARCH_PATH))
 	$(call ENTRY_$(strip $(easy_make_entry))_LinkCmd,$@,$(easy_make_objects))
 	@echo "$(easy_make_entry)" > $(easy_make_f_info)
