@@ -1,5 +1,5 @@
 # author       : roxma
-# version      : 6
+# version      : 7
 # Descriptions : A generic makefiles under linux, to help you build 
 #                your c/c++ programs easily without writing a long 
 #                long tedious makefile.
