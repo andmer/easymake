@@ -198,13 +198,27 @@ show:
 ##
 # clean all .o .d .a .so files recursively in the BUILD_ROOT
 #
-.PHONY: clean
+clean:
+clean: easy_make_clean
+.PHONY: easy_make_clean
 easy_make_clean:
 	rm -f $$(find $(BUILD_ROOT ) -name "*.o"   )
 	rm -f $$(find $(BUILD_ROOT ) -name "*.d"   )
 	rm -f $$(find $(BUILD_ROOT ) -name "*.a"   )
 	rm -f $$(find $(BUILD_ROOT ) -name "*.so"  )
 	rm -f $$(find $(BUILD_ROOT ) -name "*.out" )
+
+##
+# 
+#
+easy_make_build_goals:=$(filter $(BUILD_ROOT)/%,$(MAKECMDGOALS))
+ifeq ($(MAKECMDGOALS),)
+easy_make_build_goals:=$(filter $(BUILD_ROOT)/%,$(.DEFAULT_GOAL))
+endif
+
+easy_make_build_goals:=$(filter-out $(BUILD_ROOT)/%.o $(BUILD_ROOT)/%.d $(BUILD_ROOT)/easy_make%,$(easy_make_build_goals))
+ifneq ($(easy_make_build_goals),)
+
 
 ##
 # Pattern rule Descriptions:
@@ -241,17 +255,6 @@ $(BUILD_ROOT)/%.o: %.$(CEXT)
 
 
 ##
-# 
-#
-easy_make_build_goals:=$(filter $(BUILD_ROOT)/%,$(MAKECMDGOALS))
-ifeq ($(MAKECMDGOALS),)
-easy_make_build_goals:=$(filter $(BUILD_ROOT)/%,$(.DEFAULT_GOAL))
-endif
-
-easy_make_build_goals:=$(filter-out $(BUILD_ROOT)/%.o $(BUILD_ROOT)/%.d $(BUILD_ROOT)/easy_make%,$(easy_make_build_goals))
-ifneq ($(easy_make_build_goals),)
-
-##
 # include all generated dependency files
 #
 ifneq ($(strip $(easy_make_all_cppobjects)),)
@@ -284,9 +287,10 @@ easy_make_cppsources = $(call FilterSourcesToLink , $(CPPSOURCES) , $(easy_make_
 easy_make_csources   = $(call FilterSourcesToLink , $(CSOURCES)   , $(easy_make_entry) , $(easy_make_entry_list))
 easy_make_objects    = $(call GetCorrendingObjects,$(easy_make_cppsources),$(BUILD_ROOT),$(CPPEXT)) $(call GetCorrendingObjects,$(easy_make_csources),$(BUILD_ROOT),$(CEXT))
 
-easy_make_build_goals_ar   := $(filter %.a,$(easy_make_build_goals))
-easy_make_build_goals      := $(filter-out %.a,$(easy_make_build_goals))
-easy_make_build_goals_link := $(easy_make_build_goals)
+easy_make_build_goals_tmp := $(easy_make_build_goals)
+easy_make_build_goals_ar   := $(filter %.a,$(easy_make_build_goals_tmp))
+easy_make_build_goals_tmp      := $(filter-out %.a,$(easy_make_build_goals_tmp))
+easy_make_build_goals_link := $(easy_make_build_goals_tmp)
 
 ##
 # note: When different $(TARGET) or different $(ENTRY) is set by user at command line, this build would be PHONY
@@ -305,4 +309,6 @@ $(easy_make_build_goals_ar): $(easy_make_all_cppobjects) $(easy_make_all_cobject
 	@echo "TARGET :      $@"
 	@$(call CmdConfWriteValue,$(easy_make_f_target_last_entry),$@,$(easy_make_entry))
 
-endif
+
+endif # ifneq ($(easy_make_build_goals),)
+
