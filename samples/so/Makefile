@@ -1,4 +1,3 @@
-# pleasy type 'make ENTRY=so' to build the so
 
 COMPILE_FLAGS	+=  -fPIC -I.
 
