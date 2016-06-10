@@ -11,7 +11,6 @@ Features description:
 * Automatic C/C++ sources (\*.c and \*.cpp) file detection.
 * Auto dependency generation and meɪntənəns, to accelerate the build time.
 * Simple unit testing supported. Easy management of more than one entry point (the main function) in the project.
-* `VPATH` fully supported.
 
 ## Getting Started ##
 
