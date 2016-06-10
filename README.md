@@ -14,9 +14,6 @@ Features description:
 * `VPATH` fully supported.
 * generate binary files in a separate directory
 
-The following examples will show you how to build you program with easymake step by step. Do not be frightened by such a long article, most of the part in the following section is about writing a simple C/C++ program. easymake is very easy to learn, just as the 'easy' in the name.
-
-
 ## Getting Started ##
 
 ![basics](./doc/images/basics.gif)
