@@ -12,7 +12,6 @@
 # do not use ./bin
 BUILD_ROOT?=bin
 
-
 # CFLAGS=
 # CPPFLAGS=
 # LDFLAGS=
@@ -28,7 +27,11 @@ AR?=ar
 
 # TARGET=
 
+# TODO
+# - entry to target name mapping like golang
+
 ################################################################
+# internal implementations
 
 ##
 # A function to Check whether a string is begin with a non-empty 
@@ -235,9 +238,9 @@ ifneq ($(easy_make_build_goals),)
 ##
 # Pattern rule Descriptions:
 # 1. Prepare the directories, where the object file is gonna be created.
-# 2. Generate the .d dependency file, which specify what files this object 
+# 2. Compile the source code to object file.
+# 3. Generate the .d dependency file, which specify what files this object 
 #    files depends on. This is useful in the next make.
-# 3. Compile the source code to object file.
 # 4. Prepare $(easy_make_f_detected_entries), which is not empty.
 # 5. 
 # 6. Delete the name of the source file this target corresponds to, if it is 
@@ -249,8 +252,8 @@ ifneq ($(easy_make_build_goals),)
 #
 $(BUILD_ROOT)/%.o: %.$(CPPEXT)
 	@mkdir -p $(dir $@)
-	@$(CXX) -MM -MP -MF"$(@:.o=.d)" -MT"$@" $(CPPFLAGS) $(word 1,$^) 
 	$(CXX) -c -o $@ $(word 1,$^) $(CPPFLAGS)
+	@$(CXX) -MM -MP -MF"$(@:.o=.d)" -MT"$@" $(CPPFLAGS) $(word 1,$^) 
 	@if [ ! -f $(easy_make_f_detected_entries) ]; then echo " " > $(easy_make_f_detected_entries); fi;
 	@grep -v "^$(patsubst $(BUILD_ROOT)/%.o,%.$(CPPEXT),$@)$$" $(easy_make_f_detected_entries) > $(BUILD_ROOT)/easy_make_entries_tmp.d 
 	@cp $(BUILD_ROOT)/easy_make_entries_tmp.d $(easy_make_f_detected_entries)
@@ -258,8 +261,8 @@ $(BUILD_ROOT)/%.o: %.$(CPPEXT)
 
 $(BUILD_ROOT)/%.o: %.$(CEXT)
 	@mkdir -p $(dir $@)
-	@$(CC) -MM -MP -MF"$(@:.o=.d)" -MT"$@" $(CFLAGS) $(word 1,$^) 
 	$(CC) -c -o $@ $(word 1,$^) $(CFLAGS)
+	@$(CC) -MM -MP -MF"$(@:.o=.d)" -MT"$@" $(CFLAGS) $(word 1,$^) 
 	@if [ ! -f $(easy_make_f_detected_entries) ]; then echo " " > $(easy_make_f_detected_entries); fi;
 	@grep -v "^$(patsubst $(BUILD_ROOT)/%.o,%.$(CEXT),$@)$$" $(easy_make_f_detected_entries) > $(BUILD_ROOT)/easy_make_entries_tmp.d 
 	@cp $(BUILD_ROOT)/easy_make_entries_tmp.d $(easy_make_f_detected_entries)
