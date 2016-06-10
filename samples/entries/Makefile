@@ -1,4 +1,3 @@
-COMPILE_FLAGS	+= -O2 -I.
-LINK_FLAGS	+= 
+CPPFLAGS=-I.
 
 include ../../easymake.mk

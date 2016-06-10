@@ -11,15 +11,22 @@
 
 # do not use ./bin
 BUILD_ROOT?=bin
-# TARGET=
+
+
+# CFLAGS=
+# CPPFLAGS=
+# LDFLAGS=
+
 # VPATH=
 
 CPPEXT?=cpp
 CEXT?=c
-GCC?=gcc
-GXX?=g++
-LINKER?=g++
+
+CC?=gcc
+CXX?=g++
 AR?=ar
+
+# TARGET=
 
 ################################################################
 
@@ -156,6 +163,11 @@ endif
 CSOURCES:=$(subst ./,,$(CSOURCES))
 
 
+ifneq ($(strip $(CPPSOURCES)),)
+    easy_make_linker:=$(CXX)
+endif
+easy_make_linker?=$(CC)
+
 easy_make_all_cppobjects:=$(call GetCorrendingObjects,$(CPPSOURCES),$(BUILD_ROOT),$(CPPEXT))
 easy_make_all_cobjects:=$(call GetCorrendingObjects,$(CSOURCES),$(BUILD_ROOT),$(CEXT))
 
@@ -182,8 +194,8 @@ show:
 	@echo "VPATH               : $(VPATH)"
 	@echo "CPPEXT              : $(CPPEXT)"
 	@echo "CEXT                : $(CEXT)"
-	@echo "GCC                 : $(GCC)"
-	@echo "GXX                 : $(GXX)"
+	@echo "CC                 : $(CC)"
+	@echo "CXX                 : $(CXX)"
 	@echo "LINKER              : $(LINKER)"
 	@echo "---------------------"
 	@echo "user settings:"
@@ -237,8 +249,8 @@ ifneq ($(easy_make_build_goals),)
 #
 $(BUILD_ROOT)/%.o: %.$(CPPEXT)
 	@mkdir -p $(dir $@)
-	@$(GXX) -MM -MP -MF"$(@:.o=.d)" -MT"$@" $(COMPILE_FLAGS) $(word 1,$^) 
-	$(GXX) -c -o $@ $(word 1,$^) $(COMPILE_FLAGS)
+	@$(CXX) -MM -MP -MF"$(@:.o=.d)" -MT"$@" $(CPPFLAGS) $(word 1,$^) 
+	$(CXX) -c -o $@ $(word 1,$^) $(CPPFLAGS)
 	@if [ ! -f $(easy_make_f_detected_entries) ]; then echo " " > $(easy_make_f_detected_entries); fi;
 	@grep -v "^$(patsubst $(BUILD_ROOT)/%.o,%.$(CPPEXT),$@)$$" $(easy_make_f_detected_entries) > $(BUILD_ROOT)/easy_make_entries_tmp.d 
 	@cp $(BUILD_ROOT)/easy_make_entries_tmp.d $(easy_make_f_detected_entries)
@@ -246,8 +258,8 @@ $(BUILD_ROOT)/%.o: %.$(CPPEXT)
 
 $(BUILD_ROOT)/%.o: %.$(CEXT)
 	@mkdir -p $(dir $@)
-	@$(GCC) -MM -MP -MF"$(@:.o=.d)" -MT"$@" $(COMPILE_FLAGS) $(word 1,$^) 
-	$(GCC) -c -o $@ $(word 1,$^) $(COMPILE_FLAGS)
+	@$(CC) -MM -MP -MF"$(@:.o=.d)" -MT"$@" $(CFLAGS) $(word 1,$^) 
+	$(CC) -c -o $@ $(word 1,$^) $(CFLAGS)
 	@if [ ! -f $(easy_make_f_detected_entries) ]; then echo " " > $(easy_make_f_detected_entries); fi;
 	@grep -v "^$(patsubst $(BUILD_ROOT)/%.o,%.$(CEXT),$@)$$" $(easy_make_f_detected_entries) > $(BUILD_ROOT)/easy_make_entries_tmp.d 
 	@cp $(BUILD_ROOT)/easy_make_entries_tmp.d $(easy_make_f_detected_entries)
@@ -297,7 +309,7 @@ easy_make_build_goals_link := $(easy_make_build_goals_tmp)
 #
 $(easy_make_build_goals_link): $(easy_make_all_cppobjects) $(easy_make_all_cobjects)
 	@echo
-	$(LINKER) -o $@ $(easy_make_objects) $(LINK_FLAGS)
+	$(easy_make_linker) -o $@ $(easy_make_objects) $(LDFLAGS)
 	@echo "ENTRY  :      $(easy_make_entry)"
 	@echo "TARGET :      $@"
 	@$(call CmdConfWriteValue,$(easy_make_f_target_last_entry),$@,$(easy_make_entry))

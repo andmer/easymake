@@ -1,6 +1,6 @@
 VPATH = ../src2
 
-COMPILE_FLAGS+=-I.
+CPPFLAGS+=-I.
 
 include ../../../easymake.mk
 

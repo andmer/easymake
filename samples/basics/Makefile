@@ -1,5 +1,5 @@
-COMPILE_FLAGS	+= -O2 -I.
-LINK_FLAGS	+= 
+CPPFLAGS	+= -O2 -I.
+LDFLAGS	+= 
 
 
 include ../../easymake.mk

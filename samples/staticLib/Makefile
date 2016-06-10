@@ -1,7 +1,7 @@
 
 # make bin/libmylib.a
 
-COMPILE_FLAGS += -I.
+CPPFLAGS += -I.
 
 bin/libmylib.a: ENTRY=NONE
 

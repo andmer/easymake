@@ -1,8 +1,7 @@
 
-COMPILE_FLAGS	+=  -fPIC -I.
+CPPFLAGS	+=  -fPIC -I.
 
-bin/libmylib.so:
 bin/libmylib.so: ENTRY=NONE
-bin/libmylib.so: LINK_FLAGS+= -shared
+bin/libmylib.so: LDFLAGS += -shared
 
 include ../../easymake.mk
